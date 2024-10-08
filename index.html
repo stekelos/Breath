@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Άσκηση Διαλογισμού</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            text-align: center;
+            color: white;
+        }
+        .circle {
+            width: 300px;
+            height: 300px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            margin: 20px auto;
+        }
+        .timer {
+            font-size: 2em;
+            margin-top: 20px;
+        }
+        .instructions {
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+        .buttons {
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            margin: 5px;
+            cursor: pointer;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Διαλογισμός 2 Λεπτών</h1>
+        <div class="circle" id="circle"></div>
+        <div class="timer" id="timer">2:00</div>
+        <div class="instructions" id="instructions">Ετοιμάσου...</div>
+        <div class="buttons">
+            <button onclick="startMeditation()">Start</button>
+            <button onclick="resetMeditation()">Reset</button>
+        </div>
+        <div class="footer">to Kelly with { ❤ } by stef</div>
+    </div>
+    <script>
+        let timerElement = document.getElementById('timer');
+        let circleElement = document.getElementById('circle');
+        let instructionsElement = document.getElementById('instructions');
+        let time = 120; // 2 λεπτά σε δευτερόλεπτα
+        let interval;
+
+        function updateTimer() {
+            let minutes = Math.floor(time / 60);
+            let seconds = time % 60;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            timerElement.textContent = `${minutes}:${seconds}`;
+            time--;
+
+            if (time < 0) {
+                clearInterval(interval);
+                timerElement.textContent = "Τέλος!";
+                instructionsElement.textContent = "Ολοκληρώθηκε!";
+                circleElement.style.backgroundColor = "rgba(255, 255, 255, 0.5)";
+            }
+        }
+
+        function startMeditation() {
+            time = 120;
+            updateTimer();
+            interval = setInterval(updateTimer, 1000);
+            breatheCycle();
+        }
+
+        function resetMeditation() {
+            clearInterval(interval);
+            time = 120;
+            timerElement.textContent = "2:00";
+            instructionsElement.textContent = "Ετοιμάσου...";
+            circleElement.style.backgroundColor = "rgba(255, 255, 255, 0.5)";
+        }
+
+        function breatheCycle() {
+            let inhaleTime = 4000; // 4 δευτερόλεπτα εισπνοή
+            let holdTime = 4000; // 4 δευτερόλεπτα παύση
+            let exhaleTime = 6000; // 6 δευτερόλεπτα εκπνοή
+
+            circleElement.style.transition = "transform 4s, background-color 4s";
+            instructionsElement.textContent = "Εισπνοή...";
+            circleElement.style.transform = "scale(1.2)";
+            circleElement.style.backgroundColor = "rgba(0, 255, 0, 0.5)";
+
+            setTimeout(() => {
+                instructionsElement.textContent = "Κράτησε...";
+                circleElement.style.backgroundColor = "rgba(255, 255, 0, 0.5)";
+            }, inhaleTime);
+
+            setTimeout(() => {
+                instructionsElement.textContent = "Εκπνοή...";
+                circleElement.style.transform = "scale(1)";
+                circleElement.style.backgroundColor = "rgba(255, 0, 0, 0.5)";
+            }, inhaleTime + holdTime);
+
+            setTimeout(() => {
+                if (time >= 0) {
+                    breatheCycle();
+                }
+            }, inhaleTime + holdTime + exhaleTime);
+        }
+    </script>
+</body>
+</html>
